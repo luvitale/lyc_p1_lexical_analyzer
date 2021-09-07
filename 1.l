@@ -13,7 +13,7 @@ hex_constant 0x{hex_digit}+
 postal_code {natural_digit}{digit}{digit}{digit}
 patent {uppercase_letter}{uppercase_letter}{digit}{digit}{digit}{uppercase_letter}{uppercase_letter}
 comment \/\* .* \*\/
-id_d {letter}({letter}|{digit}|_)*({letter}|{digit})
+id_d ({letter} | {letter}({letter}|{digit}|_)*({letter}|{digit}))
 id_e {letter}(_?({letter}|{digit}))*
 other_base_constant ({octal_constant}|{hex_constant})
 int_constant {natural_digit}{digit}*
