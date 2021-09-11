@@ -1,3 +1,40 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+FILE *yyin;
+int yylval;
+
+enum {
+  POSTAL_CODE=128,
+  PATENT,
+  RESERVED_WORD,
+  ID_D,
+  ID_E,
+  OTHER_BASE_CONSTANT,
+  INT_CONSTANT,
+  REAL_CONSTANT,
+  STRING,
+  OP_SUM,
+  OP_SUB,
+  OP_MULT,
+  OP_DIV,
+  OP_ASSIGN,
+  OP_AND,
+  OP_OR,
+  OP_NOT,
+  OP_EQ,
+  OP_LT,
+  OP_LE,
+  OP_GT,
+  OP_GE,
+  OP_NE,
+  BINARY_CONSTANT
+};
+%}
+
+%option noyywrap
+%option yylineno
+
 natural_digit [1-9]
 digit (0|{natural_digit})
 uppercase_letter [A-Z]
@@ -12,8 +49,8 @@ hex_constant 0x{hex_digit}+
 
 postal_code {natural_digit}{digit}{digit}{digit}
 patent {uppercase_letter}{uppercase_letter}{digit}{digit}{digit}{uppercase_letter}{uppercase_letter}
-comment \/\* .* \*\/
-id_d ({letter} | {letter}({letter}|{digit}|_)*({letter}|{digit}))
+comment \/\*.*\*\/
+id_d ({letter}|{letter}({letter}|{digit}|_)*({letter}|{digit}))
 id_e {letter}(_?({letter}|{digit}))*
 other_base_constant ({octal_constant}|{hex_constant})
 int_constant {natural_digit}{digit}*
@@ -21,20 +58,20 @@ real_constant {digit}+\.{digit}+
 string ".*?"
 reserved_word (IF|WHILE|DECVAR|ENDDEC|INTEGER|FLOAT|WRITE)
 
-op_sum +
-op_sub -
-op_mult *
-op_div /
-op_assign =
+op_sum "+"
+op_sub "-"
+op_mult "*"
+op_div "/"
+op_assign "="
 op_and (AND|\&\&)
 op_or (OR|\|\|)
 op_not (NOT|!)
-op_eq =
-op_lt <
-op_gt >
-op_le <=
-op_ge >=
-op_ne !=
+op_eq "=="
+op_lt "<"
+op_gt ">"
+op_le "<="
+op_ge ">="
+op_ne "!="
 
 binary_digit (0|1)
 binary_constant 0b{binary_digit}+
@@ -48,15 +85,23 @@ binary_constant 0b{binary_digit}+
   printf("PATENT/%s\n", yytext);
   return PATENT;
 }
+
 {comment} /* skip comments */
-{id_d} {
-  printf("ID_D/%s\n", yytext);
-  return ID_D;
+
+{reserved_word} {
+  printf("RESERVED_WORD/%s\n", yytext);
+  return RESERVED_WORD;
 }
+
 {id_e} {
   printf("ID_E/%s\n", yytext);
   return ID_E;
 }
+{id_d} {
+  printf("ID_D/%s\n", yytext);
+  return ID_D;
+}
+
 {other_base_constant} {
   printf("OTHER_BASE_CONSTANT/%s\n", yytext);
   return OTHER_BASE_CONSTANT;
@@ -73,10 +118,6 @@ binary_constant 0b{binary_digit}+
 {string} {
   printf("STRING/%s\n", yytext);
   return STRING;
-}
-{reserved_word} {
-  printf("RESERVED_WORD/%s\n", yytext);
-  return RESERVED_WORD;
 }
 
 {op_sum} {
@@ -99,6 +140,7 @@ binary_constant 0b{binary_digit}+
   printf("OP_ASSIGN/%s\n", yytext);
   return OP_ASSIGN;
 }
+
 {op_and} {
   printf("OP_AND/%s\n", yytext);
   return OP_AND;
@@ -140,4 +182,42 @@ binary_constant 0b{binary_digit}+
   printf("BINARY_CONSTANT/%s\n", yytext);
   return BINARY_CONSTANT;
 }
+
+"("
+")"
+"{"
+"}"
+","
+";"
+":"
+" "
+\"
+
+"\n"
+"\t"
 %%
+
+int main(int argc, char** argv) {
+  const char* filename = argv[1];
+  FILE* arg_file = fopen(filename, "rt");
+
+  if (arg_file == NULL ) {
+    printf("File cannot be opened: %s\n", filename);
+    printf("Using standard input\n\n");
+  }
+  else {
+    yyin = arg_file;
+  }
+
+  int token = yylex();
+
+  while (token) {
+    token = yylex();
+  }
+
+  return 0;
+}
+
+int there_may_be_file(int param_quantity) {
+  return param_quantity > 1;
+}
