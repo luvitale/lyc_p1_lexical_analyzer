@@ -217,7 +217,3 @@ int main(int argc, char** argv) {
 
   return 0;
 }
-
-int there_may_be_file(int param_quantity) {
-  return param_quantity > 1;
-}
