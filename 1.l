@@ -30,6 +30,8 @@ enum {
   OP_NE,
   BINARY_CONSTANT
 };
+
+typedef int t_token;
 %}
 
 %option noyywrap
@@ -209,7 +211,7 @@ int main(int argc, char** argv) {
     yyin = arg_file;
   }
 
-  int token = yylex();
+  t_token token = yylex();
 
   while (token) {
     token = yylex();
