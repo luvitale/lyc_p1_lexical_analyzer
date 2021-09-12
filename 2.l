@@ -259,11 +259,14 @@ int main(int argc, char** argv) {
     token = yylex();
   }
 
+  fclose(yyin);
+
   return 0;
 }
 
 extern int linenum;
 void yyerror(char* s) {
   fprintf(stderr, COLOR_RED "\nline %d: %s\n" COLOR_RESET, linenum, s);
+  fclose(yyin);
   exit(1);
 }
