@@ -1,8 +1,14 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+
+#define COLOR_RED "\033[1;31m"
+#define COLOR_RESET "\033[0m"
+
+void yyerror(char *);
 FILE *yyin;
 int yylval;
+int linenum = 1;
 
 enum {
   POSTAL_CODE=128,
@@ -55,9 +61,9 @@ comment \/\*.*\*\/
 id_d ({letter}|{letter}({letter}|{digit}|_)*({letter}|{digit}))
 id_e {letter}(_?({letter}|{digit}))*
 other_base_constant ({octal_constant}|{hex_constant})
-int_constant {natural_digit}{digit}*
+int_constant ({digit}|{natural_digit}{digit}*)
 real_constant {digit}+\.{digit}+
-string ".*?"
+string \".*?\"
 reserved_word (IF|WHILE|DECVAR|ENDDEC|INTEGER|FLOAT|WRITE)
 
 op_sum "+"
@@ -195,8 +201,18 @@ binary_constant 0b{binary_digit}+
 " "
 \"
 
-"\n"
+"\n" {
+  ++linenum;
+}
 "\t"
+. {
+  char s[] = "Invalid character: ";
+
+  strcat(s, yytext);
+  strcat(s, "\n");
+
+  yyerror(s);
+}
 %%
 
 int main(int argc, char** argv) {
@@ -218,4 +234,10 @@ int main(int argc, char** argv) {
   }
 
   return 0;
+}
+
+extern int linenum;
+void yyerror(char* s) {
+  fprintf(stderr, COLOR_RED "\nline %d: %s\n" COLOR_RESET, linenum, s);
+  exit(1);
 }

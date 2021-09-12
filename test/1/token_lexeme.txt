@@ -8,11 +8,10 @@ ID_E/suma
 ID_E/Float
 RESERVED_WORD/ENDDEC
 ID_E/write
-ID_E/Hola
-ID_E/mundo
-OP_NOT/!
+STRING/"Hola mundo!"
 ID_E/contador
-0ID_E/actual
+INT_CONSTANT/0
+ID_E/actual
 INT_CONSTANT/999
 ID_E/suma
 OTHER_BASE_CONSTANT/02
@@ -41,9 +40,7 @@ ID_E/suma
 OP_SUM/+
 ID_E/actual
 ID_E/write
-ID_E/La
-ID_E/suma
-ID_E/es
+STRING/"La suma es: "
 ID_E/write
 ID_E/suma
 ID_E/if
@@ -51,9 +48,7 @@ ID_E/actual
 OP_GT/>
 INT_CONSTANT/2
 ID_E/write
-INT_CONSTANT/2
-OP_GT/>
-INT_CONSTANT/3
+STRING/"2 > 3"
 ID_E/if
 ID_E/actual
 OP_LT/<
@@ -63,29 +58,25 @@ ID_E/actual
 OP_GE/>=
 INT_CONSTANT/3
 ID_E/write
-ID_E/soy
-ID_E/true
+STRING/"soy true"
 ID_E/if
 ID_E/actual
 OP_LE/<=
 INT_CONSTANT/3
 ID_E/write
-ID_E/soy
-ID_E/true
+STRING/"soy true"
 ID_E/if
 ID_E/actual
 OP_NE/!=
 INT_CONSTANT/3
 ID_E/write
-ID_E/soy
-ID_E/true
+STRING/"soy true"
 ID_E/if
 ID_E/actual
 OP_EQ/==
 INT_CONSTANT/3
 ID_E/write
-ID_E/soy
-ID_E/true
+STRING/"soy true"
 ID_E/else
 ID_E/actual
 REAL_CONSTANT/333.3333
